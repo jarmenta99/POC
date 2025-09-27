@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ServiceBusSession_Func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7212",
+      "launchBrowser": false
+    }
+  }
+}
