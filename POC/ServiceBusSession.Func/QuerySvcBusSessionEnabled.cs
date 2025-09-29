@@ -18,14 +18,10 @@ public class QuerySvcBusSessionEnabled
         [ServiceBusTrigger("sessiontestqueue",
         Connection = "CrewSharedServiceBusConnectionSessionId",
         IsSessionsEnabled = true)]
-    ServiceBusReceivedMessage message,
+        ServiceBusReceivedMessage message,
         ServiceBusMessageActions messageActions)
     {
-        Console.WriteLine($"Received MessageId:", message.MessageId);
-        Console.WriteLine(message.Body.ToString());
-        try { Console.WriteLine($"SessionId: {message.SessionId}"); }
-        catch { Console.WriteLine("No SessionId"); }
-
+        Console.WriteLine($"[SessionId: {message.SessionId}, SequNumber: {message.SequenceNumber}, {message.Body.ToString()}]");
         await messageActions.CompleteMessageAsync(message);
     }
 }
