@@ -3,6 +3,8 @@
     "Values": {
         "AzureWebJobsStorage": "UseDevelopmentStorage=true",
         "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-        "CrewSharedServiceBusConnectionSessionId": "@Microsoft.KeyVault(VaultName=crewtrng-test-kv;SecretName=CrewSharedServiceBusConnectionSessionId)"
+        "CrewSharedServiceBusConnectionSessionId": "@Microsoft.KeyVault(VaultName=crewtrng-test-kv;SecretName=CrewSharedServiceBusConnectionSessionId)",
+        //with topic and subscription
+        "ServiceBusConnectionString": "@Microsoft.KeyVault(VaultName=crewtrng-test-kv;SecretName=ServiceBusConnectionString)"
     }
 }
