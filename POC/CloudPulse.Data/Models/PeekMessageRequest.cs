@@ -9,7 +9,9 @@ public class PeekMessageRequest
     public required string TopicName { get; set; }
     
     public required string SubscriptionName { get; set; }
-    
+
+    public bool IsSessionEnabled { get; set; }
+
     public int MaxMessages { get; set; }
     
     public bool DeadLetter { get; set; } = false;

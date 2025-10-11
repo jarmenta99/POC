@@ -19,21 +19,28 @@ public class ServiceBusTopicsFunction
         _serviceBusService = serviceBusService;
     }
 
-    [Function("GetTopics")]
+    [Function("Topics")]
     public async Task<HttpResponseData> GetTopics([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
     {
         try
         {
-            /*
-            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var data = JsonConvert.DeserializeObject<UserInput>(requestBody);
-            */
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation($"Topics requested");
 
-            var results = await _serviceBusService.GetServiceBusTopicsResultAsync(AzureEnvironment.Qa);
+            // Get AzureEnvironment from query string, default to Qa if not provided
+            var envStr = req.Query["environment"];
+            AzureEnvironment environment = AzureEnvironment.Qa;
+            if (!string.IsNullOrWhiteSpace(envStr) && Enum.TryParse(envStr, true, out AzureEnvironment parsedEnv))
+            {
+                environment = parsedEnv;
+            }
+
+            var results = await _serviceBusService.GetServiceBusTopicsResultAsync(environment);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(results);
+
+            _logger.LogInformation($"Topics processed");
+
             return response;
         }
         catch (Exception ex)

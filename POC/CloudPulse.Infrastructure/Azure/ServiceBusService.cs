@@ -82,7 +82,7 @@ public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings) 
         return results;
     }
 
-    public async Task<IReadOnlyList<ServiceBusReceivedMessage>> PeekMessagesAsync(PeekMessageRequest peekMessageRequest)
+    public async Task<IReadOnlyList<ServiceBusPeekedMessage>> PeekMessagesAsync(PeekMessageRequest peekMessageRequest)
     {
         try
         {
@@ -96,7 +96,23 @@ public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings) 
                 }
             );
 
-            return await receiver.PeekMessagesAsync(peekMessageRequest.MaxMessages);
+            var results = await receiver.PeekMessagesAsync(peekMessageRequest.MaxMessages);
+
+            // Project to DTO with Body as string
+            var dtoResults = results.Select(m => new ServiceBusPeekedMessage
+            {
+                MessageId = m.MessageId,
+                Message = m.Body.ToString(), // Converts BinaryData to string
+                CorrelationId = m.CorrelationId ?? string.Empty,
+                SessionId = m.SessionId,
+                Subject = m.Subject,
+                DeliveryCount = m.DeliveryCount,
+                DeadLetterErrorDescription = m.DeadLetterErrorDescription,
+                DeadLetterReason = m.DeadLetterReason,
+                EnqueuedTime = m.EnqueuedTime.UtcDateTime
+            }).ToList();
+
+            return dtoResults;
         }
         catch (Exception ex)
         {
