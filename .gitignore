@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/POC/.vs
+/POC/CloudPulse.Data/bin/Debug/net8.0
+/POC/CloudPulse.Data/obj
+/POC/CloudPulse.Infrastructure/bin/Debug/net8.0
+/POC/CloudPulse.Infrastructure/obj

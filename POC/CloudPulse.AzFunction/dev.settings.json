@@ -1,0 +1,10 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "AppInsights_ConnStr": "@Microsoft.KeyVault(VaultName=crewtrng-test-kv;SecretName=AppInsightsConnectionString)",
+    "CrewSharedServiceBusConnectionQA": "Update to use policy RootManageSharedAccessKey", //"@Microsoft.KeyVault(VaultName=crewtrng-qa-kv;SecretName=ServiceBusConnectionStringQA)",
+    "CrewSharedServiceBusConnectionTest": "Update to use policy RootManageSharedAccessKey" //"@Microsoft.KeyVault(VaultName=crewtrng-test-kv;SecretName=ServiceBusConnectionString)",
+  }
+}
