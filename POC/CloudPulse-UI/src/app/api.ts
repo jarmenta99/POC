@@ -33,17 +33,6 @@ export class ApiService {
         'Content-Type': 'application/json'
       }
     });
-    
-    // Option 2: Use GET with query parameters (uncomment if API only accepts GET)
-    // return this.http.get(url, { 
-    //   params: {
-    //     AzureEnvironment: request.AzureEnvironment,
-    //     TopicName: request.TopicName,
-    //     SubscriptionName: request.SubscriptionName,
-    //     MaxMessages: request.MaxMessages.toString(),
-    //     DeadLetter: request.DeadLetter.toString()
-    //   }
-    // });
   }
 
   constructor(private http: HttpClient) {}

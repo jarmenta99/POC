@@ -36,6 +36,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class MessagesTableComponent implements OnChanges, AfterViewInit {
   @Input() messages: any[] = [];
   @Input() isLoading: boolean = false;
+  @Input() isDeadLetterMode: boolean = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -52,6 +53,7 @@ export class MessagesTableComponent implements OnChanges, AfterViewInit {
   
   constructor() {
     console.log('MessagesTableComponent constructor called');
+    this.updateDisplayedColumns();
     // Page size options will be set on the paginator
   }
 
@@ -62,6 +64,11 @@ export class MessagesTableComponent implements OnChanges, AfterViewInit {
       console.log('Messages length:', this.messages?.length);
       this.updateDataSource();
       this.extractAvailableProperties();
+    }
+    
+    if (changes['isDeadLetterMode']) {
+      console.log('Dead letter mode changed:', this.isDeadLetterMode);
+      this.updateDisplayedColumns();
     }
   }
 
@@ -97,6 +104,15 @@ export class MessagesTableComponent implements OnChanges, AfterViewInit {
     if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
+  }
+
+  private updateDisplayedColumns() {
+    if (this.isDeadLetterMode) {
+      this.displayedColumns = ['MessageId', 'Message', 'actions', 'DeadLetterReason', 'DeadLetterErrorDescription'];
+    } else {
+      this.displayedColumns = ['MessageId', 'Message', 'actions'];
+    }
+    console.log('Updated displayed columns:', this.displayedColumns);
   }
 
   private extractAvailableProperties() {

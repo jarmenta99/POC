@@ -20,11 +20,13 @@ export class TopicsFilterComponent implements OnInit, OnDestroy {
   selectedTopic: string = '';
   selectedSubscription: string = '';
   environment: string = 'Qa';
+  isDeadLetter: boolean = false;
   isLoadingTopics: boolean = false;
   
   private destroy$ = new Subject<void>();
 
   @Output() filterChanged = new EventEmitter<any>();
+
 
   constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
 
@@ -100,6 +102,7 @@ export class TopicsFilterComponent implements OnInit, OnDestroy {
     console.log('Selected Topic:', this.selectedTopic);
     console.log('Selected Subscription:', this.selectedSubscription);
     console.log('Environment:', this.environment);
+    console.log('deadLetter:', this.isDeadLetter);
     console.log('Topics array:', this.topics);
     
     if (!this.selectedTopic || this.selectedTopic === '') {
@@ -117,7 +120,8 @@ export class TopicsFilterComponent implements OnInit, OnDestroy {
     const filterData = {
       topicName: this.selectedTopic,
       subscriptionName: this.selectedSubscription,
-      azureEnvironment: this.environment
+      azureEnvironment: this.environment,
+      deadLetter: this.isDeadLetter
     };
     
     console.log('✅ Validation passed! Emitting filter data:', filterData);

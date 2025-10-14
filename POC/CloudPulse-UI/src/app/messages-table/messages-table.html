@@ -77,6 +77,25 @@
         </td>
       </ng-container>
       
+      <!-- Dead Letter Reason Column -->
+      <ng-container matColumnDef="DeadLetterReason">
+        <th mat-header-cell *matHeaderCellDef>Dead Letter Reason</th>
+        <td mat-cell *matCellDef="let message" class="dead-letter-reason">
+          {{ message.DeadLetterReason || 'N/A' }}
+        </td>
+      </ng-container>
+      
+      <!-- Dead Letter Error Description Column -->
+      <ng-container matColumnDef="DeadLetterErrorDescription">
+        <th mat-header-cell *matHeaderCellDef>Error Description</th>
+        <td mat-cell *matCellDef="let message" class="dead-letter-error">
+          <div class="error-text" [matTooltip]="message.DeadLetterErrorDescription || 'N/A'">
+            {{ (message.DeadLetterErrorDescription || 'N/A').substring(0, 50) }}
+            <span *ngIf="(message.DeadLetterErrorDescription || '').length > 50">...</span>
+          </div>
+        </td>
+      </ng-container>
+      
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
