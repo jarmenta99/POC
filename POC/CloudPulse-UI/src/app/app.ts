@@ -31,7 +31,7 @@ export class App {
       AzureEnvironment: filter.azureEnvironment,
       TopicName: filter.topicName,
       SubscriptionName: filter.subscriptionName,
-      MaxMessages: 10,
+      MaxMessages: 2752, // Max allowed by API
       DeadLetter: false
     };
     

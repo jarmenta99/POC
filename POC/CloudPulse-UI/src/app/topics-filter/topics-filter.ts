@@ -24,7 +24,11 @@ export class TopicsFilterComponent implements OnInit {
 
   ngOnInit() {
     console.log('TopicsFilterComponent initialized');
-    console.log('Calling getTopics with environment:', this.environment);
+    this.loadTopics();
+  }
+
+  private loadTopics() {
+    console.log('Loading topics for environment:', this.environment);
     
     this.api.getTopics(this.environment).subscribe({
       next: (data) => {
@@ -35,6 +39,10 @@ export class TopicsFilterComponent implements OnInit {
         if (!this.topics || this.topics.length === 0) {
           console.warn('No topics found in response');
         }
+        
+        // Reset selections when topics change
+        this.selectedTopic = '';
+        this.selectedSubscription = '';
       },
       error: (error) => {
         console.error('Error loading topics:', error);
@@ -42,26 +50,23 @@ export class TopicsFilterComponent implements OnInit {
         console.error('Error message:', error.message);
         console.error('Error details:', error.error);
         
-        // Fallback: Use mock data for development
-        console.log('Using mock data for development');
-        this.topics = [
-          {
-            TopicName: "feedtransactionmanager",
-            Subscriptions: [
-              { SubscriptionName: "crewqualsync" },
-              { SubscriptionName: "test-subscription" }
-            ]
-          },
-          {
-            TopicName: "user-events",
-            Subscriptions: [
-              { SubscriptionName: "user-events-sub1" },
-              { SubscriptionName: "user-events-sub2" }
-            ]
-          }
-        ];
+        // Clear topics on error
+        this.topics = [];
+        this.selectedTopic = '';
+        this.selectedSubscription = '';
       }
     });
+  }
+
+  onEnvironmentChange() {
+    console.log('Environment changed to:', this.environment);
+    this.loadTopics();
+  }
+
+  onTopicChange() {
+    console.log('Topic changed to:', this.selectedTopic);
+    // Reset subscription when topic changes
+    this.selectedSubscription = '';
   }
 
   onSubmit() {

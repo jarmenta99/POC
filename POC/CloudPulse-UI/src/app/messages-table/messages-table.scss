@@ -1,0 +1,142 @@
+.messages-table-container {
+  padding: 20px;
+  
+  .filter-card {
+    margin-bottom: 20px;
+    
+    .filter-controls {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      
+      .filter-input {
+        flex: 1;
+        min-width: 200px;
+      }
+      
+      .property-select {
+        min-width: 250px;
+      }
+      
+      .filter-buttons {
+        display: flex;
+        gap: 8px;
+        
+        button {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+      }
+    }
+  }
+  
+  .table-container {
+    .mat-mdc-table {
+      width: 100%;
+      
+      .message-preview {
+        max-width: 400px;
+        
+        .message-text {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      
+      .message-row {
+        &.expanded-row {
+          background-color: #f5f5f5;
+        }
+        
+        &:hover {
+          background-color: #f9f9f9;
+        }
+      }
+      
+      .detail-row {
+        height: 0;
+        min-height: 0;
+        
+        .expanded-detail {
+          padding: 16px;
+          border-top: 1px solid #e0e0e0;
+          
+          .json-card {
+            .mat-mdc-card-header {
+              .spacer {
+                flex: 1;
+              }
+            }
+            
+            .json-container {
+              max-height: 400px;
+              overflow: auto;
+              border: 1px solid #e0e0e0;
+              border-radius: 4px;
+              
+              .json-content {
+                margin: 0;
+                padding: 12px;
+                background-color: #f8f8f8;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                line-height: 1.4;
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .no-data {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    h3 {
+      margin: 0 0 8px 0;
+      font-weight: 400;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+// Global table styles
+.mat-mdc-table {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mat-mdc-header-cell {
+  font-weight: 600;
+  color: #333;
+}
+
+.mat-mdc-cell {
+  padding: 12px 8px;
+}
+
+// Paginator styles
+.mat-mdc-paginator {
+  border-top: 1px solid #e0e0e0;
+  background-color: #fafafa;
+}

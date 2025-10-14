@@ -1,13 +1,135 @@
-<table mat-table [dataSource]="messages" class="mat-elevation-z8">
-  <ng-container matColumnDef="MessageId">
-    <th mat-header-cell *matHeaderCellDef>Message ID</th>
-    <td mat-cell *matCellDef="let msg">{{ msg.MessageId }}</td>
-  </ng-container>
-  <ng-container matColumnDef="Message">
-    <th mat-header-cell *matHeaderCellDef>Message</th>
-    <td mat-cell *matCellDef="let msg">{{ msg.Message }}</td>
-  </ng-container>
-  <!-- Add more columns as needed -->
-  <tr mat-header-row *matHeaderRowDef="['MessageId', 'Message']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['MessageId', 'Message'];"></tr>
-</table>
+<div class="messages-table-container">
+
+  <!-- Quick Debug -->
+  <div *ngIf="messages.length === 0" class="debug-info">
+    <p>No messages received yet. Messages array length: {{ messages.length }}</p>
+  </div>
+  <div *ngIf="messages.length > 0" class="debug-info">
+    <p>✅ {{ messages.length }} messages received!</p>
+  </div>
+
+  <!-- Filtering Controls -->
+  <mat-card class="filter-card">
+    <mat-card-header>
+      <mat-card-title>Filter Messages</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="filter-controls">
+        <mat-form-field appearance="outline" class="filter-input">
+          <mat-label>Search in messages</mat-label>
+          <input matInput [(ngModel)]="filterText" placeholder="Type to search...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="property-select">
+          <mat-label>Filter by properties (optional)</mat-label>
+          <mat-select [(value)]="selectedProperties" multiple>
+            <mat-option *ngFor="let prop of availableProperties" [value]="prop">
+              {{ prop }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <div class="filter-buttons">
+          <button mat-raised-button color="primary" (click)="applyFilter()">
+            <mat-icon>filter_list</mat-icon>
+            Apply Filter
+          </button>
+          <button mat-button (click)="clearFilter()">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Messages Table -->
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
+      
+      <!-- Message ID Column -->
+      <ng-container matColumnDef="MessageId">
+        <th mat-header-cell *matHeaderCellDef>Message ID</th>
+        <td mat-cell *matCellDef="let message">{{ message.MessageId || 'N/A' }}</td>
+      </ng-container>
+      
+      <!-- Message Preview Column -->
+      <ng-container matColumnDef="Message">
+        <th mat-header-cell *matHeaderCellDef>Message Preview</th>
+        <td mat-cell *matCellDef="let message" class="message-preview">
+          <div class="message-text">
+            {{ (message.Message || message.message || stringifyJson(message)).substring(0, 100) }}
+            <span *ngIf="(message.Message || message.message || stringifyJson(message)).length > 100">...</span>
+          </div>
+        </td>
+      </ng-container>
+      
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let message">
+          <button mat-icon-button 
+                  color="primary" 
+                  (click)="toggleExpansion(message)"
+                  [attr.aria-label]="expandedElement === message ? 'Collapse' : 'Expand'"
+                  matTooltip="View JSON">
+            <mat-icon>{{ expandedElement === message ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </button>
+          <button mat-icon-button 
+                  color="accent" 
+                  (click)="copyToClipboard(formatJson(message))"
+                  matTooltip="Copy JSON">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      
+      <!-- Expanded Detail Row -->
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let message" [attr.colspan]="displayedColumns.length">
+          <div class="expanded-detail" *ngIf="message === expandedElement">
+            <mat-card class="json-card">
+              <mat-card-header>
+                <mat-card-title>Message Details (JSON)</mat-card-title>
+                <div class="spacer"></div>
+                <button mat-icon-button (click)="copyToClipboard(formatJson(message))">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="json-container">
+                  <pre class="json-content">{{ formatJson(message) }}</pre>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </td>
+      </ng-container>
+      
+      <!-- Header and Row Definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let message; columns: displayedColumns;"
+          class="message-row"
+          [class.expanded-row]="expandedElement === message">
+      </tr>
+      <tr mat-row *matRowDef="let message; columns: ['expandedDetail']" class="detail-row"></tr>
+    </table>
+    
+    <!-- Paginator -->
+    <mat-paginator 
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [pageSize]="25"
+      showFirstLastButtons
+      aria-label="Select page of messages">
+    </mat-paginator>
+  </div>
+  
+  <!-- No Data Message -->
+  <div *ngIf="messages.length === 0" class="no-data">
+    <mat-icon>inbox</mat-icon>
+    <h3>No messages found</h3>
+    <p>Try adjusting your filters or search criteria.</p>
+  </div>
+  
+</div>

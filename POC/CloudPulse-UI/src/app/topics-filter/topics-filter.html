@@ -1,6 +1,6 @@
 <mat-form-field>
   <mat-label>Environment</mat-label>
-  <mat-select [(value)]="environment">
+  <mat-select [(value)]="environment" (selectionChange)="onEnvironmentChange()">
     <mat-option value="Qa">QA</mat-option>
     <mat-option value="Test">Test</mat-option>
     <mat-option value="Prod">Prod</mat-option>
@@ -9,7 +9,7 @@
 
 <mat-form-field>
   <mat-label>Topic</mat-label>
-  <mat-select [(value)]="selectedTopic">
+  <mat-select [(value)]="selectedTopic" (selectionChange)="onTopicChange()">
     <mat-option *ngFor="let topic of topics" [value]="topic.TopicName">{{ topic.TopicName }}</mat-option>
   </mat-select>
 </mat-form-field>
