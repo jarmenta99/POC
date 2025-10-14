@@ -1,0 +1,37 @@
+{
+  "topics": [
+    {
+      "TopicName": "user-events",
+      "Subscriptions": [
+        { "SubscriptionName": "user-events-sub1" },
+        { "SubscriptionName": "user-events-sub2" }
+      ]
+    },
+    {
+      "TopicName": "order-events", 
+      "Subscriptions": [
+        { "SubscriptionName": "order-events-sub1" },
+        { "SubscriptionName": "order-processing" }
+      ]
+    },
+    {
+      "TopicName": "notification-events",
+      "Subscriptions": [
+        { "SubscriptionName": "email-notifications" },
+        { "SubscriptionName": "sms-notifications" }
+      ]
+    }
+  ],
+  "messages": [
+    {
+      "MessageId": "msg-001",
+      "Message": "User registered successfully",
+      "Timestamp": "2025-10-13T18:30:00Z"
+    },
+    {
+      "MessageId": "msg-002", 
+      "Message": "Order placed for user 12345",
+      "Timestamp": "2025-10-13T18:35:00Z"
+    }
+  ]
+}

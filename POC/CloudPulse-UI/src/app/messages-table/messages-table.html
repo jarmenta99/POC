@@ -1,0 +1,13 @@
+<table mat-table [dataSource]="messages" class="mat-elevation-z8">
+  <ng-container matColumnDef="MessageId">
+    <th mat-header-cell *matHeaderCellDef>Message ID</th>
+    <td mat-cell *matCellDef="let msg">{{ msg.MessageId }}</td>
+  </ng-container>
+  <ng-container matColumnDef="Message">
+    <th mat-header-cell *matHeaderCellDef>Message</th>
+    <td mat-cell *matCellDef="let msg">{{ msg.Message }}</td>
+  </ng-container>
+  <!-- Add more columns as needed -->
+  <tr mat-header-row *matHeaderRowDef="['MessageId', 'Message']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['MessageId', 'Message'];"></tr>
+</table>
