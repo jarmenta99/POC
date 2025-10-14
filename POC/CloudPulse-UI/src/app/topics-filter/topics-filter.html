@@ -32,9 +32,7 @@
     </mat-select>
   </mat-form-field>
 
-  <div style="margin-top: 20px;">
-
-    <mat-form-field>
+  <mat-form-field>
     <mat-label>Message Type</mat-label>
     <mat-select [(value)]="isDeadLetter" [disabled]="isLoadingTopics">
       <mat-option [value]="false">Active</mat-option>
@@ -47,6 +45,7 @@
     }
   </mat-form-field>
 
+  <div class="button-container">
     <button mat-raised-button color="primary" (click)="onSubmit()" type="button" [disabled]="isLoadingTopics">
       @if (isLoadingTopics) {
         <mat-icon>
@@ -55,7 +54,7 @@
       }
       Get Messages
     </button>
-    <div style="margin-top: 10px; font-size: 12px; color: #666;">
+    <div class="debug-info">
       <!--Debug: Topic={{selectedTopic}}, Sub={{selectedSubscription}}, Env={{environment}}, DeadLetter={{isDeadLetter}}
       <br>Loading state: {{isLoadingTopics}}-->
       @if (isLoadingTopics) {
