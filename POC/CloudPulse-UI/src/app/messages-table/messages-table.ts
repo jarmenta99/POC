@@ -35,6 +35,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class MessagesTableComponent implements OnChanges, AfterViewInit {
   @Input() messages: any[] = [];
+  @Input() isLoading: boolean = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 

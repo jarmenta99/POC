@@ -1,36 +1,52 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { Subject, takeUntil } from 'rxjs';
 import { ApiService } from '../api';
 
 @Component({
   selector: 'app-topics-filter',
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatSelectModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatProgressSpinnerModule, MatIconModule],
   templateUrl: './topics-filter.html',
   styleUrls: ['./topics-filter.scss']
 })
-export class TopicsFilterComponent implements OnInit {
+export class TopicsFilterComponent implements OnInit, OnDestroy {
   topics: any[] = [];
   selectedTopic: string = '';
   selectedSubscription: string = '';
   environment: string = 'Qa';
+  isLoadingTopics: boolean = false;
+  
+  private destroy$ = new Subject<void>();
 
   @Output() filterChanged = new EventEmitter<any>();
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     console.log('TopicsFilterComponent initialized');
     this.loadTopics();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private loadTopics() {
     console.log('Loading topics for environment:', this.environment);
+    console.log('Setting isLoadingTopics to true');
+    this.isLoadingTopics = true;
+    this.cdr.detectChanges(); // Force change detection
     
-    this.api.getTopics(this.environment).subscribe({
+    this.api.getTopics(this.environment)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
       next: (data) => {
         console.log('Topics API response:', data);
         this.topics = data.topics || data.Topics || data;
@@ -43,6 +59,11 @@ export class TopicsFilterComponent implements OnInit {
         // Reset selections when topics change
         this.selectedTopic = '';
         this.selectedSubscription = '';
+        
+        console.log('Setting isLoadingTopics to false');
+        this.isLoadingTopics = false;
+        this.cdr.detectChanges(); // Force change detection
+        console.log('Loading state after reset:', this.isLoadingTopics);
       },
       error: (error) => {
         console.error('Error loading topics:', error);
@@ -54,6 +75,11 @@ export class TopicsFilterComponent implements OnInit {
         this.topics = [];
         this.selectedTopic = '';
         this.selectedSubscription = '';
+        
+        console.log('Setting isLoadingTopics to false (error case)');
+        this.isLoadingTopics = false;
+        this.cdr.detectChanges(); // Force change detection
+        console.log('Loading state after error reset:', this.isLoadingTopics);
       }
     });
   }

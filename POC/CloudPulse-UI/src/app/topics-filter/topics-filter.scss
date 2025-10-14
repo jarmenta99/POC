@@ -1,0 +1,42 @@
+.topics-filter-container {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  
+  mat-form-field {
+    min-width: 200px;
+    flex: 1;
+    
+    &.loading {
+      .mat-mdc-form-field-suffix {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  
+  button {
+    margin-left: 16px;
+    
+    &:disabled {
+      opacity: 0.6;
+    }
+    
+    mat-icon {
+      display: flex;
+      align-items: center;
+      margin-right: 8px;
+    }
+  }
+}
+
+.debug-info {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+}

@@ -1,31 +1,52 @@
-<mat-form-field>
-  <mat-label>Environment</mat-label>
-  <mat-select [(value)]="environment" (selectionChange)="onEnvironmentChange()">
-    <mat-option value="Qa">QA</mat-option>
-    <mat-option value="Test">Test</mat-option>
-    <mat-option value="Prod">Prod</mat-option>
-  </mat-select>
-</mat-form-field>
+<div class="topics-filter-container">
+  <mat-form-field>
+    <mat-label>Environment</mat-label>
+    <mat-select [(value)]="environment" (selectionChange)="onEnvironmentChange()" [disabled]="isLoadingTopics">
+      <mat-option value="Qa">QA</mat-option>
+      <mat-option value="Test">Test</mat-option>
+      <mat-option value="Prod">Prod</mat-option>
+    </mat-select>
+    @if (isLoadingTopics) {
+      <mat-icon matSuffix>
+        <mat-spinner diameter="20"></mat-spinner>
+      </mat-icon>
+    }
+  </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Topic</mat-label>
-  <mat-select [(value)]="selectedTopic" (selectionChange)="onTopicChange()">
-    <mat-option *ngFor="let topic of topics" [value]="topic.TopicName">{{ topic.TopicName }}</mat-option>
-  </mat-select>
-</mat-form-field>
+  <mat-form-field>
+    <mat-label>Topic</mat-label>
+    <mat-select [(value)]="selectedTopic" (selectionChange)="onTopicChange()" [disabled]="isLoadingTopics">
+      <mat-option *ngFor="let topic of topics" [value]="topic.TopicName">{{ topic.TopicName }}</mat-option>
+    </mat-select>
+    @if (isLoadingTopics) {
+      <mat-icon matSuffix>
+        <mat-spinner diameter="20"></mat-spinner>
+      </mat-icon>
+    }
+  </mat-form-field>
 
-<mat-form-field>
-  <mat-label>Subscription</mat-label>
-  <mat-select [(value)]="selectedSubscription">
-    <mat-option *ngFor="let sub of getSubscriptionsForSelectedTopic()" [value]="sub.SubscriptionName">{{ sub.SubscriptionName }}</mat-option>
-  </mat-select>
-</mat-form-field>
+  <mat-form-field>
+    <mat-label>Subscription</mat-label>
+    <mat-select [(value)]="selectedSubscription" [disabled]="isLoadingTopics">
+      <mat-option *ngFor="let sub of getSubscriptionsForSelectedTopic()" [value]="sub.SubscriptionName">{{ sub.SubscriptionName }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<div style="margin-top: 20px;">
-  <button mat-raised-button color="primary" (click)="onSubmit()" type="button">
-    Get Messages
-  </button>
-  <div style="margin-top: 10px; font-size: 12px; color: #666;">
-    Debug: Topic={{selectedTopic}}, Sub={{selectedSubscription}}, Env={{environment}}
+  <div style="margin-top: 20px;">
+    <button mat-raised-button color="primary" (click)="onSubmit()" type="button" [disabled]="isLoadingTopics">
+      @if (isLoadingTopics) {
+        <mat-icon>
+          <mat-spinner diameter="16"></mat-spinner>
+        </mat-icon>
+      }
+      Get Messages
+    </button>
+    <div style="margin-top: 10px; font-size: 12px; color: #666;">
+      Debug: Topic={{selectedTopic}}, Sub={{selectedSubscription}}, Env={{environment}}
+      <br>Loading state: {{isLoadingTopics}}
+      @if (isLoadingTopics) {
+        <span> - Loading topics...</span>
+      }
+    </div>
   </div>
 </div>

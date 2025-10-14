@@ -1,5 +1,14 @@
 <div class="app-container">
   <h1>CloudPulse UI</h1>
   <app-topics-filter (filterChanged)="onFilter($event)"></app-topics-filter>
-  <app-messages-table [messages]="messages"></app-messages-table>
+  
+  <!-- Loading indicator for messages -->
+  @if (isLoadingMessages) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading messages...</p>
+    </div>
+  }
+  
+  <app-messages-table [messages]="messages" [isLoading]="isLoadingMessages"></app-messages-table>
 </div>

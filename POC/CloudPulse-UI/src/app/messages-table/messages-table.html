@@ -1,52 +1,64 @@
 <div class="messages-table-container">
 
   <!-- Quick Debug -->
-  <div *ngIf="messages.length === 0" class="debug-info">
-    <p>No messages received yet. Messages array length: {{ messages.length }}</p>
-  </div>
-  <div *ngIf="messages.length > 0" class="debug-info">
-    <p>✅ {{ messages.length }} messages received!</p>
-  </div>
+  @if (messages.length === 0 && !isLoading) {
+    <div class="debug-info">
+      <p>No messages received yet. Messages array length: {{ messages.length }}</p>
+    </div>
+  }
+  @if (messages.length > 0 && !isLoading) {
+    <div class="debug-info">
+      <p>✅ {{ messages.length }} messages received!</p>
+    </div>
+  }
+  @if (isLoading) {
+    <div class="debug-info">
+      <p>🔄 Loading messages...</p>
+    </div>
+  }
 
   <!-- Filtering Controls -->
-  <mat-card class="filter-card">
-    <mat-card-header>
-      <mat-card-title>Filter Messages</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="filter-controls">
-        <mat-form-field appearance="outline" class="filter-input">
-          <mat-label>Search in messages</mat-label>
-          <input matInput [(ngModel)]="filterText" placeholder="Type to search...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-        
-        <mat-form-field appearance="outline" class="property-select">
-          <mat-label>Filter by properties (optional)</mat-label>
-          <mat-select [(value)]="selectedProperties" multiple>
-            <mat-option *ngFor="let prop of availableProperties" [value]="prop">
-              {{ prop }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        
-        <div class="filter-buttons">
-          <button mat-raised-button color="primary" (click)="applyFilter()">
-            <mat-icon>filter_list</mat-icon>
-            Apply Filter
-          </button>
-          <button mat-button (click)="clearFilter()">
-            <mat-icon>clear</mat-icon>
-            Clear
-          </button>
+  @if (!isLoading) {
+    <mat-card class="filter-card">
+      <mat-card-header>
+        <mat-card-title>Filter Messages</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="filter-controls">
+          <mat-form-field appearance="outline" class="filter-input">
+            <mat-label>Search in messages</mat-label>
+            <input matInput [(ngModel)]="filterText" placeholder="Type to search...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="property-select">
+            <mat-label>Filter by properties (optional)</mat-label>
+            <mat-select [(value)]="selectedProperties" multiple>
+              <mat-option *ngFor="let prop of availableProperties" [value]="prop">
+                {{ prop }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <div class="filter-buttons">
+            <button mat-raised-button color="primary" (click)="applyFilter()">
+              <mat-icon>filter_list</mat-icon>
+              Apply Filter
+            </button>
+            <button mat-button (click)="clearFilter()">
+              <mat-icon>clear</mat-icon>
+              Clear
+            </button>
+          </div>
         </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+      </mat-card-content>
+    </mat-card>
+  }
 
   <!-- Messages Table -->
-  <div class="table-container">
-    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
+  @if (!isLoading) {
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
       
       <!-- Message ID Column -->
       <ng-container matColumnDef="MessageId">
@@ -124,13 +136,16 @@
       showFirstLastButtons
       aria-label="Select page of messages">
     </mat-paginator>
-  </div>
+    </div>
+  }
   
   <!-- No Data Message -->
-  <div *ngIf="messages.length === 0" class="no-data">
-    <mat-icon>inbox</mat-icon>
-    <h3>No messages found</h3>
-    <p>Try adjusting your filters or search criteria.</p>
-  </div>
+  @if (messages.length === 0 && !isLoading) {
+    <div class="no-data">
+      <mat-icon>inbox</mat-icon>
+      <h3>No messages found</h3>
+      <p>Try adjusting your filters or search criteria.</p>
+    </div>
+  }
   
 </div>

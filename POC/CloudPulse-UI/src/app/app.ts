@@ -1,11 +1,13 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApiService } from './api';
 import { TopicsFilterComponent } from './topics-filter/topics-filter';
 import { MessagesTableComponent } from './messages-table/messages-table';
 
 @Component({
   selector: 'app-root',
-  imports: [TopicsFilterComponent, MessagesTableComponent],
+  imports: [CommonModule, MatProgressSpinnerModule, TopicsFilterComponent, MessagesTableComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -13,6 +15,7 @@ import { MessagesTableComponent } from './messages-table/messages-table';
 export class App {
   messages: any[] = [];
   title = 'CloudPulse-UI';
+  isLoadingMessages: boolean = false;
 
   constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
 
@@ -36,11 +39,14 @@ export class App {
     };
     
     console.log('✅ About to call API with params:', requestParams);
+    this.isLoadingMessages = true;
+    this.cdr.detectChanges(); // Update UI to show loading state
     
     this.api.getMessages(requestParams).subscribe({
       next: (data) => {
         console.log('✅ Messages received successfully:', data);
         this.messages = Array.isArray(data) ? data : [data];
+        this.isLoadingMessages = false;
         this.cdr.detectChanges(); // Manually trigger change detection
       },
       error: (error) => {
@@ -54,6 +60,7 @@ export class App {
           { MessageId: 'mock-1', Message: 'Test message 1', Timestamp: new Date().toISOString() },
           { MessageId: 'mock-2', Message: 'Test message 2', Timestamp: new Date().toISOString() }
         ];
+        this.isLoadingMessages = false;
         this.cdr.detectChanges(); // Manually trigger change detection
       }
     });
