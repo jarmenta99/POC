@@ -21,7 +21,7 @@ public class ServiceBusMessagesFunction
     }
 
     [Function("Messages")]
-    public async Task<HttpResponseData> GetMessages([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+    public async Task<HttpResponseData> GetMessages([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
     {
         try
         {
