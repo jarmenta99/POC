@@ -151,6 +151,48 @@ export class MessagesTableComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  // Format just the Message property content as JSON
+  formatMessageJson(messageObj: any): string {
+    try {
+      // Get the Message property content
+      const messageContent = messageObj.Message || messageObj.message || '';
+      
+      // If it's already a string that looks like JSON, parse and format it
+      if (typeof messageContent === 'string') {
+        try {
+          const parsed = JSON.parse(messageContent);
+          return JSON.stringify(parsed, null, 2);
+        } catch {
+          // If it's not valid JSON, return as is
+          return messageContent;
+        }
+      }
+      
+      // If it's already an object, format it
+      return JSON.stringify(messageContent, null, 2);
+    } catch (error) {
+      return 'Invalid JSON content';
+    }
+  }
+
+  // Get raw message content for copying
+  getMessageContent(messageObj: any): string {
+    const messageContent = messageObj.Message || messageObj.message || '';
+    
+    if (typeof messageContent === 'string') {
+      try {
+        // If it's JSON string, parse and re-stringify for clean formatting
+        const parsed = JSON.parse(messageContent);
+        return JSON.stringify(parsed, null, 2);
+      } catch {
+        // If not JSON, return as is
+        return messageContent;
+      }
+    }
+    
+    return JSON.stringify(messageContent, null, 2);
+  }
+
   stringifyJson(obj: any): string {
     try {
       return JSON.stringify(obj);

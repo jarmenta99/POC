@@ -73,13 +73,13 @@
                   color="primary" 
                   (click)="toggleExpansion(message)"
                   [attr.aria-label]="expandedElement === message ? 'Collapse' : 'Expand'"
-                  matTooltip="View JSON">
+                  matTooltip="View Message JSON">
             <mat-icon>{{ expandedElement === message ? 'expand_less' : 'expand_more' }}</mat-icon>
           </button>
           <button mat-icon-button 
                   color="accent" 
-                  (click)="copyToClipboard(formatJson(message))"
-                  matTooltip="Copy JSON">
+                  (click)="copyToClipboard(getMessageContent(message))"
+                  matTooltip="Copy Message JSON">
             <mat-icon>content_copy</mat-icon>
           </button>
         </td>
@@ -91,15 +91,16 @@
           <div class="expanded-detail" *ngIf="message === expandedElement">
             <mat-card class="json-card">
               <mat-card-header>
-                <mat-card-title>Message Details (JSON)</mat-card-title>
+                <mat-card-title>Message Content (JSON)</mat-card-title>
                 <div class="spacer"></div>
-                <button mat-icon-button (click)="copyToClipboard(formatJson(message))">
+                <button mat-icon-button (click)="copyToClipboard(getMessageContent(message))" 
+                        matTooltip="Copy Message JSON">
                   <mat-icon>content_copy</mat-icon>
                 </button>
               </mat-card-header>
               <mat-card-content>
                 <div class="json-container">
-                  <pre class="json-content">{{ formatJson(message) }}</pre>
+                  <pre class="json-content">{{ formatMessageJson(message) }}</pre>
                 </div>
               </mat-card-content>
             </mat-card>
