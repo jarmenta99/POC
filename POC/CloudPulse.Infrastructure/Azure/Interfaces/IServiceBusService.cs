@@ -7,5 +7,5 @@ public interface IServiceBusService
 {
     Task<ServiceBusTopicsResult> GetServiceBusTopicsResultAsync(AzureEnvironment azureEnvironment);
     Task<IReadOnlyList<ServiceBusPeekedMessage>> PeekMessagesAsync(PeekMessageRequest peekMessageRequest);
-    Task DeleteMessagesAsync(PeekMessageRequest peekMessageRequest, IEnumerable<string> messageIds);
+    Task DeleteMessagesAsync(DeleteMessageRequest deleteMessageRequest);
 }

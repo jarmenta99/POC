@@ -8,6 +8,8 @@ public class ServiceBusPeekedMessage
 
     public string? SessionId { get; set; }
 
+    public long SequenceNumber { get; set; }
+
     public required string CorrelationId { get; set; }
 
     public string? Subject { get; set; }

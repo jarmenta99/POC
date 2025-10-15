@@ -4,13 +4,15 @@ using CloudPulse.Domain.Azure.Interfaces;
 using CloudPulse.Domain.Enums;
 using CloudPulse.Domain.Models;
 using CloudPulse.Infrastructure.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CloudPulse.Infrastructure.Azure;
 
-public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings) : IServiceBusService
+public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings, ILogger<ServiceBusService> logger) : IServiceBusService
 {
     private readonly ConnectionSettings _connectionSettings = connectionSettings.Value ?? throw new ArgumentNullException(nameof(connectionSettings));
+    private readonly ILogger<ServiceBusService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     private string ResolveConnectionString(AzureEnvironment azureEnvironment)
     {
@@ -109,38 +111,43 @@ public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings) 
                 DeliveryCount = m.DeliveryCount,
                 DeadLetterErrorDescription = m.DeadLetterErrorDescription,
                 DeadLetterReason = m.DeadLetterReason,
-                EnqueuedTime = m.EnqueuedTime.UtcDateTime
+                EnqueuedTime = m.EnqueuedTime.UtcDateTime,
+                SequenceNumber = m.SequenceNumber
             }).ToList();
 
             return dtoResults;
         }
         catch (Exception ex)
         {
-            // Log the exception (consider using a logging framework)
-            Console.WriteLine($"Error peeking messages: {ex.Message}");
+            _logger.LogError(ex, "Error peeking messages");
             throw;
         }
     }
 
-    public async Task DeleteMessagesAsync(PeekMessageRequest peekMessageRequest, IEnumerable<string> messageIds)
+    public async Task DeleteMessagesAsync(DeleteMessageRequest deleteMessageRequest)
     {
         try
         {
-            var busClient = GetServiceBusClient(peekMessageRequest.AzureEnvironment);
+            var busClient = GetServiceBusClient(deleteMessageRequest.AzureEnvironment);
             var receiver = busClient.CreateReceiver(
-                peekMessageRequest.TopicName,
-                peekMessageRequest.SubscriptionName,
+                deleteMessageRequest.TopicName,
+                deleteMessageRequest.SubscriptionName,
                 new ServiceBusReceiverOptions()
                 {
-                    SubQueue = peekMessageRequest.DeadLetter ? SubQueue.DeadLetter : SubQueue.None
+                    SubQueue = deleteMessageRequest.DeadLetter ? SubQueue.DeadLetter : SubQueue.None
                 }
             );
 
-            foreach (var messageId in messageIds)
+            var minSeqNumber = deleteMessageRequest.SequenceNumbers.Min();
+            var maxSeqNumber = deleteMessageRequest.SequenceNumbers.Max();
+            int totalMessages = (int)maxSeqNumber - (int)minSeqNumber + 1;
+
+            var messages = await receiver.PeekMessagesAsync(totalMessages, minSeqNumber);
+            var dictionary = messages.ToDictionary(m => m.SequenceNumber, m => m);
+
+            foreach (var sequenceNumber in deleteMessageRequest.SequenceNumbers)
             {
-                var messages = await receiver.PeekMessagesAsync(100000);
-                var message = messages.FirstOrDefault(m => m.MessageId == messageId);
-                if (message != null)
+                if (dictionary.TryGetValue(sequenceNumber, out var message))
                 {
                     await receiver.CompleteMessageAsync(message);
                 }
@@ -148,8 +155,7 @@ public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings) 
         }
         catch (Exception ex)
         {
-            // Log the exception (consider using a logging framework)
-            Console.WriteLine($"Error peeking messages: {ex.Message}");
+            _logger.LogError(ex, "Error deleting messages");
             throw;
         }
     }

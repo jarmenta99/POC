@@ -21,7 +21,7 @@ public class ServiceBusMessagesFunction
     }
 
     [Function("Messages")]
-    public async Task<HttpResponseData> GetMessages([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+    public async Task<HttpResponseData> GetMessages([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
     {
         try
         {
@@ -44,6 +44,36 @@ public class ServiceBusMessagesFunction
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error in GetMessages function");
+            var errorResponse = req.CreateResponse(System.Net.HttpStatusCode.InternalServerError);
+            await errorResponse.WriteAsJsonAsync(new { error = ex.Message });
+            return errorResponse;
+        }
+    }
+
+    [Function("DeleteMessages")]
+    public async Task<HttpResponseData> DeleteMessages([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "messages")] HttpRequestData req)
+    {
+        try
+        {
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var data = JsonConvert.DeserializeObject<DeleteMessageRequest>(requestBody);
+
+            if (data == null)
+            {
+                var badResponse = req.CreateResponse(System.Net.HttpStatusCode.BadRequest);
+                await badResponse.WriteAsJsonAsync(new { error = "Invalid request body" });
+                return badResponse;
+            }
+
+            await _serviceBusService.DeleteMessagesAsync(data);
+            var response = req.CreateResponse(System.Net.HttpStatusCode.NoContent);
+            await response.WriteAsJsonAsync(new { message = "Messages deleted successfully" });
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in DeleteMessages function");
             var errorResponse = req.CreateResponse(System.Net.HttpStatusCode.InternalServerError);
             await errorResponse.WriteAsJsonAsync(new { error = ex.Message });
             return errorResponse;
