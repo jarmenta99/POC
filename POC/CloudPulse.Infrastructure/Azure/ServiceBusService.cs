@@ -129,6 +129,7 @@ public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings, 
         try
         {
             var busClient = GetServiceBusClient(deleteMessageRequest.AzureEnvironment);
+            //TODO: Fix this code so we can delete records using sessionId and sequence numbers, currently not accepted
             var receiver = busClient.CreateReceiver(
                 deleteMessageRequest.TopicName,
                 deleteMessageRequest.SubscriptionName,
@@ -149,6 +150,7 @@ public class ServiceBusService(IOptions<ConnectionSettings> connectionSettings, 
             {
                 if (dictionary.TryGetValue(sequenceNumber, out var message))
                 {
+                    //section failing here
                     await receiver.CompleteMessageAsync(message);
                 }
             }
