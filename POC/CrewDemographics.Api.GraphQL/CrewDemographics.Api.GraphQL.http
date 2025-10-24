@@ -1,0 +1,24 @@
+@CrewDemographics.Api.GraphQL_HostAddress = http://localhost:5178
+
+GET {{CrewDemographics.Api.GraphQL_HostAddress}}/weatherforecast/
+Accept: application/json
+
+################################
+###       GraphQL Queries     ##
+################################
+### Note: 
+### In postman by pasting http://localhost:5178/graphql/ in a graphQL project
+### you can through the UI explore the schema and run queries interactively.
+### To run these examples, run the api project and use the following requests:
+
+### Get the SDL (schema definition)
+GET http://localhost:5178/graphql/schema.graphql
+
+### Sample query to get persons
+POST http://localhost:5178/graphql
+Content-Type: application/json
+
+{
+  "query": "query { persons(first: 50, after: null) { pageInfo { hasNextPage endCursor } edges { cursor node { person_id is_contractor emplid aag_company empl_status hr_status first_name last_name hire_dt cmpny_seniority_dt union_seniority_dt grade grade_entry_dt jobtitle paygroup business_unit qualtero_user_metadata_type_name certification certification_type last_modified_dttm_utc last_modified_by comments crew_position { po_position_id ar_airport_id stpo_eff_date sycd_po_status stpo_pos_eff_date stpo_stud_pos_id } location_city location seniority seniority_eff_date passport_number passport_expiration_date sent_to_qualtero_dttm_utc } } } }"
+}
+

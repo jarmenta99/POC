@@ -8,3 +8,7 @@
 /POC/CloudPulse.Infrastructure/bin/Debug/net8.0
 /POC/CloudPulse.Infrastructure/obj
 /POC/CloudPulse-UI/.vscode
+/POC/CrewDemographics.GraphQL/obj
+/POC/CrewDemographics.GraphQL/Properties
+/POC/CrewDemographics.Api.GraphQL/obj
+/POC/CrewDemographics.Api.GraphQL/bin/Debug/net8.0
